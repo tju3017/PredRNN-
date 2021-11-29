@@ -2,12 +2,12 @@ import torch
 import torch.nn as nn
 
 class GHU(nn.Module):
-    def __init__(self, inputs_shape, num_features):
+    def __init__(self, inputs_shape, num_features, lnorm):
         super(GHU,self).__init__()
         """Initialize the Gradient Highway Unit.
         """
         self.num_features = num_features
-        self.layer_norm = 0
+        self.layer_norm = lnorm
         self.batch = inputs_shape[0]
         self.height = inputs_shape[3]
         self.width = inputs_shape[2]

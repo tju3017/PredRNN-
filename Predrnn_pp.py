@@ -3,11 +3,9 @@ import torch.nn as nn
 from GradientHighway import GHU as ghu
 from CausalLSTMCell import CausalLSTMCell as cslstm
 
-from torch.utils.data import DataLoader, random_split
-from torch.utils.data.sampler import SubsetRandomSampler
 
 class RNN(nn.Module):
-    def __init__(self, num_layers, num_hidden, shape):
+    def __init__(self, num_layers, num_hidden, shape, lnorm):
         super(RNN, self).__init__()
 
         self.img_width = shape[2] # 倒数第二个
@@ -30,10 +28,10 @@ class RNN(nn.Module):
                 num_hidden_in = self.num_hidden[i - 1]
             cell_list.append(cslstm(num_hidden_in,
                                    num_hidden[i],
-                                   self.shape, 1.0))
+                                   self.shape, 1.0, lnorm))
         self.cell_list = nn.ModuleList(cell_list)
         self.conv_last = nn.Conv2d(self.num_hidden[-1], 3, 1, 1, 0)
-        ghu_list.append(ghu(self.shape, self.num_hidden[0]))
+        ghu_list.append(ghu(self.shape, self.num_hidden[0], lnorm))
         self.ghu_list = nn.ModuleList(ghu_list)
 
 

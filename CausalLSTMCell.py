@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from TensorLayerNorm import tensor_layer_norm
 
 class CausalLSTMCell(nn.Module):
     def __init__(self, num_hidden_in,num_hidden_out,

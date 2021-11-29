@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class CausalLSTMCell(nn.Module):
     def __init__(self, num_hidden_in,num_hidden_out,
-                 seq_shape, forget_bias):
+                 seq_shape, forget_bias, lnorm):
         super(CausalLSTMCell, self).__init__()
         """Initialize the Causal LSTM cell.
         Args:
@@ -20,7 +20,7 @@ class CausalLSTMCell(nn.Module):
         self.batch = seq_shape[0]
         self.height = seq_shape[3]
         self.width = seq_shape[2]
-        self.layer_norm = 0
+        self.layer_norm = lnorm
         self._forget_bias = forget_bias
         #self.width = width
         #self.bn_h_cc = tensor_layer_norm(self.num_hidden_out * 4)

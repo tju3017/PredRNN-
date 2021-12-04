@@ -8,11 +8,11 @@ class RNN(nn.Module):
     def __init__(self, num_layers, num_hidden, shape, lnorm):
         super(RNN, self).__init__()
 
-        self.img_width = shape[2] # 倒数第二个
+        self.img_width = shape[2] 
         self.img_height = shape[3]
         self.batch = shape[0]
-        self.total_length = 12 # what is total_length
-        self.input_length = 6 # what is input_length
+        self.total_length = 20 
+        self.input_length = 10 
         self.shape = shape
         self.num_layers = num_layers
         self.num_hidden = num_hidden
@@ -22,7 +22,6 @@ class RNN(nn.Module):
 
         for i in range(self.num_layers):
             if i == 0:
-                #此处与tf代码不一致
                 num_hidden_in = 3
             else:
                 num_hidden_in = self.num_hidden[i - 1]
@@ -39,7 +38,7 @@ class RNN(nn.Module):
         # [batch, length, channel, width, height]
         images = images_tensor.permute(0, 1, 4, 2, 3).contiguous()
         mask_true = mask_true.permute(0, 1, 4, 2, 3).contiguous()
-        #print()
+
         batch = images.shape[0]
         height = images.shape[3]
         width = images.shape[4]
@@ -76,15 +75,14 @@ class RNN(nn.Module):
         # [length, batch, channel, height, width] -> [batch, length, height, width, channel]
         next_images = torch.stack(next_images, dim=1)
         out = next_images
-        # print(out.shape)
-        # print(images[:, 1:].shape)
+
         loss = self.MSE_criterion(next_images, images[:, 1:])
         return out， loss
 
 
 a=torch.randn(1, 20, 224, 224, 3)
 
-use_gpu = False
+use_gpu = True
 device = torch.device("cuda" if use_gpu else "cpu")
 shape = [1, 3, 224, 224]
 num_layers = 4
@@ -94,9 +92,7 @@ optimizer = torch.optim.Adam(predrnnpp.parameters(), lr=1e-3)
 
 def schedule_sampling(eta):
     random_flip = np.random.random_sample((batch_size, total_length - input_length - 1))
-    #随机给出在[0, 1)半开半闭区间的随机数
     true_token = (random_flip < eta)
-    #print(true_token.shape)
     ones = np.ones((img_width, img_width, img_channel))
     zeros = np.zeros((img_width, img_width, img_channel))
     real_input_flag = []
